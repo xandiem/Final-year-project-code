@@ -27,38 +27,31 @@ pygame.joystick.init()
 joystick = pygame.joystick.Joystick(0)
 joystick.init()
 pygame.init()
-help(agent)
+#help(agent)
+angular_velocities = [0., 0., 0.]
 #function for joystick axis movement
-#moves the robot accordingly
-
 def joystick_movement():
+	global angular_velocities
 	#pygame code to look for event occurrence
 	for event in pygame.event.get():
-		#print(event)
 		#check to ensure its joystick axis motion(nothing else)
 		if event.type == pygame.JOYAXISMOTION:
 			pos_list = []
-			pos_rearranged = []
 			#get all axes of the joystick
 			axes = joystick.get_numaxes()
 			#go through x,y,z axes
 			for i in range(axes-1):
 				#get the joystick pos
 				axis = joystick.get_axis(i)
-				value = axis * (10)
+				value = axis * (20)
 				#add value to array
 				pos_list.append(value)
 			#rearrange axes as x is second parameter in velocity method
-			xvalue = pos_list[0]
-			if xvalue != 0.0:
-				xvalue = -xvalue
-			pos_rearranged.append(pos_list[1])
-			pos_rearranged.append(xvalue)
-			pos_rearranged.append(pos_list[2])
-			print(pos_list)
-			print(pos_rearranged)
+			angular_velocities[0] = pos_list[1]
+			angular_velocities[1] = -pos_list[0]
+			angular_velocities[2] = pos_list[2]
 			#set the velocity to list
-			agent.set_base_angular_velocites(pos_rearranged)
+	agent.set_base_angular_velocites(angular_velocities)
 
 def robot_set_position():	
 	starting_pose = agent.get_2d_pose()
